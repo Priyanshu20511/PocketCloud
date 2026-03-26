@@ -14,6 +14,7 @@ struct RegisterView: View {
     @State private var isBiometricEnabled = false
     @State private var showAlert = false
     @State private var alertMessage = ""
+    @State private var biometricType = "Biometric"
     
     var body: some View {
         VStack(spacing: 20) {
@@ -22,20 +23,20 @@ struct RegisterView: View {
                 .font(.largeTitle)
                 .bold()
             
-            // Email Field
+            // Email
             TextField("Enter Email", text: $email)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .keyboardType(.emailAddress)
             
-            // Password Field
+            // Password
             SecureField("Enter Password (Recovery)", text: $password)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
             
-            // Enable Biometric Button
+            // Face ID Button
             Button(action: {
                 enableBiometric()
             }) {
-                Text("Register Fingerprint / Face ID")
+                Text("Register with \(biometricType)")
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .padding()
@@ -57,53 +58,72 @@ struct RegisterView: View {
             
         }
         .padding()
+        .onAppear {
+            detectBiometricType()
+        }
         .alert(isPresented: $showAlert) {
             Alert(title: Text("Info"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
         }
     }
     
-    // MARK: - Biometric Function
+    // Detect Face ID or Touch ID
+    func detectBiometricType() {
+        let context = LAContext()
+        
+        if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil) {
+            switch context.biometryType {
+            case .faceID:
+                biometricType = "Face ID"
+            case .touchID:
+                biometricType = "Touch ID"
+            default:
+                biometricType = "Biometric"
+            }
+        }
+    }
+    
+    // Enable Face ID
     func enableBiometric() {
         let context = LAContext()
         var error: NSError?
         
         if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) {
             
-            context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Enable biometric authentication") { success, authenticationError in
+            let reason = "Register using \(biometricType)"
+            
+            context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason) { success, _ in
                 
                 DispatchQueue.main.async {
                     if success {
                         isBiometricEnabled = true
-                        alertMessage = "Biometric Registered Successfully ✅"
+                        alertMessage = "\(biometricType) Enabled ✅"
                     } else {
-                        alertMessage = "Biometric Failed ❌"
+                        alertMessage = "\(biometricType) Failed ❌"
                     }
                     showAlert = true
                 }
             }
-            
         } else {
-            alertMessage = "Biometric not available on this device"
+            alertMessage = "Biometric not available"
             showAlert = true
         }
     }
     
-    // MARK: - Register User
+    // Register
     func registerUser() {
         
         if email.isEmpty || password.isEmpty {
-            alertMessage = "Please fill all fields"
+            alertMessage = "Fill all fields"
             showAlert = true
             return
         }
         
         if !isBiometricEnabled {
-            alertMessage = "Please enable biometric authentication"
+            alertMessage = "Enable Face ID first"
             showAlert = true
             return
         }
         
-        // Save data (for demo: UserDefaults)
         UserDefaults.standard.set(email, forKey: "userEmail")
         UserDefaults.standard.set(password, forKey: "userPassword")
         UserDefaults.standard.set(true, forKey: "biometricEnabled")
