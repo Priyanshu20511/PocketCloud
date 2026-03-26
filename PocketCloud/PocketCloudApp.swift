@@ -12,7 +12,8 @@ struct PocketCloudApp: App {
     var body: some Scene {
         WindowGroup {
 //            ContentView()
-            DashboardView()
+//            DashboardView()
+            LoginView()
         }
     }
 }
