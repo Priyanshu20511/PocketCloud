@@ -20,3 +20,4 @@ final class BiometricAuthManager {
         try await context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Authorize Secure NVMe Hosting")
     }
 }
+
