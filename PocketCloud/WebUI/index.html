@@ -1,8 +1,69 @@
-//
-//  index.html
-//  PocketCloud
-//
-//  Created by CU_Student21 on 02/04/26.
-//
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PocketCloud</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <style>
+        body {
+            font-family: Arial;
+            background: #0f172a;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
 
-import Foundation
+        h1 {
+            color: #a78bfa;
+        }
+
+        .card {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 10px auto;
+            max-width: 400px;
+        }
+
+        button {
+            background: #a78bfa;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            color: black;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        a {
+            color: #38bdf8;
+            display: block;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>🚀 PocketCloud</h1>
+
+<div class="card">
+    <h3>Welcome</h3>
+    <p>Your personal cloud server</p>
+</div>
+
+<div class="card">
+    <h3>Files</h3>
+    <a href="file1.txt">file1.txt</a>
+    <a href="index.html">index.html</a>
+</div>
+
+<div class="card">
+    <h3>Actions</h3>
+    <button onclick="alert('More features coming!')">
+        Upload (Soon)
+    </button>
+</div>
+
+</body>
+</html>
